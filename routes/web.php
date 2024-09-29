@@ -3,10 +3,22 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmployeeController;
+
+Route::view('/home', 'home');
 
 
 Route::get('/', function () {
-    return view('welcome');
+
+    $name = "Phanun";
+    $gender = "Male";
+    $marks = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    return view('welcome', compact('name', 'gender', 'marks'));
+    // return view('welcome', [
+    //     'name' => $name,
+    //     'gender' => $gender,
+    //     'marks' => $marks
+    // ]);
 });
 
 Route::prefix('category')->group(function () {
@@ -18,9 +30,11 @@ Route::prefix('category')->group(function () {
         return view('categories.index', compact('cats'));
     })->name('category.index');
 
+
     Route::get("create", function () {
         return view("categories.create");
     })->name('category.create');
+
 
     Route::post("/", function (Request $req) {
 
@@ -32,6 +46,7 @@ Route::prefix('category')->group(function () {
         return back();
     });
 
+    //Get Data for edit
     Route::get("{id}/edit", function ($id) {
         $cat = DB::table('categories')->where("id", $id)->first();
         if ($cat)
@@ -40,18 +55,17 @@ Route::prefix('category')->group(function () {
             return abort(404);
     })->whereNumber('id')
         ->name('category.edit');
-    //whereNumber()
-    //whereAlpha
-    //whereAlphaNumeric
-    //wherIn
-
+    //send data to server when post
     Route::put("{id}/edit", function (Request $req, $id) {
         $data = $req->except(['_token', '_method']);
         $updated = DB::table("categories")->where("id", $id)->update($data);
         if ($updated) {
-            return redirect("/category");
+            return to_route('category.index');
+            //return redirect()->route('category.index');
         }
         return back();
+        //return redirect()->back();
+        // return back()->withInput(['name' => $req->name]);
     });
 
 
@@ -65,9 +79,15 @@ Route::prefix('category')->group(function () {
     });
 });
 
-
-
-
+Route::prefix('employee')->group(function () {
+    Route::controller(EmployeeController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.index');
+        Route::get('{id}/edit', 'edit')->name('employee.edit')
+            ->whereNumber('id');
+        Route::put('{id}', 'update')->name('employee.update')
+            ->whereNumber('id');
+    });
+});
 
 
 

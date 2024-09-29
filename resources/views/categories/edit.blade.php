@@ -61,15 +61,13 @@
                 <div class="mb-2 row">
                     <label class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
-                        <input type="text" value="{{ $cat->name }}" name="name" class="form-control" />
+                        <input type="text" value="{{ old('name') }}" name="name" class="form-control" />
                     </div>
                 </div>
                 <div class="mb-2 row">
                     <label class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
-                        <textarea name="description" class="form-control">
-                    {{ $cat->description }}
-                </textarea>
+                        <textarea name="description" class="form-control"></textarea>
                     </div>
                 </div>
                 <button class="btn btn-sm btn-primary">Create</button>
